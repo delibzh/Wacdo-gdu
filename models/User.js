@@ -16,14 +16,15 @@ const userSchema = mongoose.Schema(
 );
 
 // haché le mdp vant de sauvegarder l'utilisateur :
-user.Schema.pre("save", async function (nex) {
+userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   try {
     //généré un sel et hashé le mdp  ( 10 tour pour équilibrer sécu + perfs)
-    const salt = await bcrypt.hash(this.password, salt);
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
     next();
   } catch (error) {
-    next(error); // passer l'erreur au middle ware suivant
+    next(error); // passer l'erreur au middleware suivant
   }
 });
 
@@ -32,6 +33,6 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
-userSchema.plugin(uniqueValidator);
+userSchema.plugin(uniqueValidator, { message: "{PATH} doit être unique" });
 
 module.exports = mongoose.model("User", userSchema);

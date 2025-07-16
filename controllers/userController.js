@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 
 const User = require("../models/User");
 
-exports.signup = async (req, res) => {
+exports.register = async (req, res) => {
   try {
     //récupérer les données envoyé ( username, mdp, role, )
     const { username, password, role } = req.body;
@@ -23,8 +23,9 @@ exports.signup = async (req, res) => {
     const user = new User({ username, password, role });
     await user.save();
     //renvoi une confirmation
-    res.status(201).json({ message: "Utilisateur crée", user: { user, role } });
+    res.status(201).json({ message: "Utilisateur créé", user: { user, role } });
   } catch (error) {
+    console.error("Erreur register", error);
     res.status(500).json({ error: "Erreur serveur" });
   }
 };
@@ -57,6 +58,7 @@ exports.login = async (req, res) => {
     //renvoyer le token et les infos de l'user :
     res.status(200).json({ token, user: { username, role: user.role } });
   } catch (error) {
-    res.status(500).json({ error: "Erreur serveur" });
+    console.error("Erreur login", error);
+    res.status(500).json({ error: "Erreur serveur" + error.message });
   }
 };

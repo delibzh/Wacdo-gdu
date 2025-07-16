@@ -1,12 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const productCtrl = require("../controllers/menuController");
+const menuCtrl = require("../controllers/menuController");
 const app = express();
 
-router.get("/", productCtrl.getAllProducts);
-router.get("/:id", productCtrl.getOneProduct);
-router.delete("/:id", productCtrl.deleteProduct);
-router.post("/", productCtrl.createProduct);
-router.put("/", productCtrl.modifyProduct);
+router.get("/", auth, menuCtrl.getAllMenus);
+router.get("/", auth, menuCtrl.getOneMenu);
+router.delete("/:id", auth, restrictTo(["admin"]), menuCtrl.deleteMenu);
+router.post("/", auth, restrictTo(["admin"]), menuCtrl.createMenu);
+router.put("/:id", auth, restrictTo(["admin"]), menuCtrl.modifyMenu);
 
 module.exports = router;
+s;
