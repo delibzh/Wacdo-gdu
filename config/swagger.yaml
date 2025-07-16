@@ -1,0 +1,499 @@
+openapi: 3.0.3
+info:
+  title: API Wacdo
+  version: 1.0.0
+  description: Documentation API pour Wacdo
+
+security:
+  - bearerAuth: []
+
+servers:
+  - url: http://localhost:3000/api
+
+paths:
+  /auth/register:
+    post:
+      summary: Inscription d'un nouvel utilisateur
+      tags:
+        - Utilisateurs
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserInput"
+      responses:
+        "201":
+          description: Utilisateur créé
+        "400":
+          description: Données invalides
+
+  /auth/login:
+    post:
+      summary: Connexion d'un utilisateur
+      tags:
+        - Utilisateurs
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  example: "admin@example.com"
+                password:
+                  type: string
+                  example: "admin123"
+      responses:
+        "200":
+          description: Connexion réussie, retourne un token
+        "401":
+          description: Identifiants invalides
+
+  /auth/users:
+    get:
+      summary: Obtenir la liste de tous les utilisateurs (admin seulement)
+      tags:
+        - Utilisateurs
+      responses:
+        "200":
+          description: Liste des utilisateurs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+        "403":
+          description: Accès refusé
+
+  /products:
+    get:
+      summary: Récupérer tous les produits
+      tags:
+        - Produits
+      responses:
+        "200":
+          description: Liste des produits
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+
+    post:
+      summary: Créer un produit (admin seulement)
+      tags:
+        - Produits
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductInput"
+            example:
+              title: "Burger classique"
+              description: "Un burger avec cheddar et salade"
+              price: 12.5
+              imageUrl: "http://example.com/image.jpg"
+              category: "Menu"
+              available: true
+      responses:
+        "201":
+          description: Produit créé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "400":
+          description: Données invalides
+        "401":
+          description: Non authentifié
+        "403":
+          description: Rôle non autorisé
+
+  /products/{id}:
+    get:
+      summary: Récupérer un produit par ID
+      tags:
+        - Produits
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Produit trouvé
+
+    put:
+      summary: Modifier un produit (admin seulement)
+      tags:
+        - Produits
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductInput"
+      responses:
+        "200":
+          description: Produit modifié
+
+    delete:
+      summary: Supprimer un produit (admin seulement)
+      tags:
+        - Produits
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Produit supprimé
+
+  /menus:
+    get:
+      summary: Obtenir tous les menus
+      tags:
+        - Menus
+      responses:
+        "200":
+          description: Liste des menus
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Menu"
+
+    post:
+      summary: Créer un menu (admin seulement)
+      tags:
+        - Menus
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MenuInput"
+      responses:
+        "201":
+          description: Menu créé
+
+  /menus/{id}:
+    get:
+      summary: Récupérer un menu par ID
+      tags:
+        - Menus
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Menu trouvé
+
+    put:
+      summary: Modifier un menu (admin seulement)
+      tags:
+        - Menus
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MenuInput"
+      responses:
+        "200":
+          description: Menu modifié
+
+    delete:
+      summary: Supprimer un menu (admin seulement)
+      tags:
+        - Menus
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Menu supprimé
+
+  /orders:
+    post:
+      summary: Créer une commande (admin et accueil)
+      tags:
+        - Commandes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderInput"
+      responses:
+        "201":
+          description: Commande créée
+
+  /orders/{id}:
+    get:
+      summary: Récupérer une commande par ID (admin, accueil, préparation)
+      tags:
+        - Commandes
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Commande trouvée
+
+    put:
+      summary: Modifier une commande (admin, accueil, préparation)
+      tags:
+        - Commandes
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderInput"
+      responses:
+        "200":
+          description: Commande modifiée
+
+    delete:
+      summary: Supprimer une commande (admin seulement)
+      tags:
+        - Commandes
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Commande supprimée
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "64fc6f1d9b456abc123def45"
+        username:
+          type: string
+          example: "admin2"
+        email:
+          type: string
+          example: "admin2@example.com"
+        role:
+          type: string
+          enum: [admin, preparation, accueil, client]
+          example: "admin"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    UserInput:
+      type: object
+      required:
+        - username
+        - email
+        - password
+        - role
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+          format: password
+        role:
+          type: string
+          enum: [admin, preparation, accueil, client]
+
+    Product:
+      type: object
+      properties:
+        _id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        imageUrl:
+          type: string
+        category:
+          type: string
+          enum: [Menu, Boisson, Dessert, Autre]
+        available:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    ProductInput:
+      type: object
+      required:
+        - title
+        - description
+        - price
+        - category
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        imageUrl:
+          type: string
+        category:
+          type: string
+          enum: [Menu, Boisson, Dessert, Autre]
+        available:
+          type: boolean
+
+    Menu:
+      type: object
+      properties:
+        _id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        imageUrl:
+          type: string
+        category:
+          type: string
+          enum: [Menu, Formule, Offre]
+        available:
+          type: boolean
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+
+    MenuInput:
+      type: object
+      required:
+        - title
+        - description
+        - price
+        - imageUrl
+        - category
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        imageUrl:
+          type: string
+        category:
+          type: string
+          enum: [Menu, Formule, Offre]
+        available:
+          type: boolean
+
+    Order:
+      type: object
+      properties:
+        _id:
+          type: string
+        orderId:
+          type: string
+        products:
+          type: array
+          items:
+            type: string
+        clientInfo:
+          type: object
+        totalPrice:
+          type: number
+        status:
+          type: string
+          enum: [en attente, préparation, prête, servie, annulée]
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+
+    OrderInput:
+      type: object
+      required:
+        - orderId
+        - products
+        - totalPrice
+      properties:
+        orderId:
+          type: string
+        products:
+          type: array
+          items:
+            type: string
+        clientInfo:
+          type: object
+        totalPrice:
+          type: number
+        status:
+          type: string
+          enum: [en attente, préparation, prête, servie, annulée]

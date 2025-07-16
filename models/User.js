@@ -11,6 +11,7 @@ const userSchema = mongoose.Schema(
       required: true,
       enum: ["admin", "preparation", "accueil", "client"],
     },
+    email: { type: String, required: true },
   },
   { timestamps: true }
 );

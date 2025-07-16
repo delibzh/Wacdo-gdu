@@ -5,11 +5,11 @@ const User = require("../models/User");
 
 exports.register = async (req, res) => {
   try {
-    //récupérer les données envoyé ( username, mdp, role, )
-    const { username, password, role } = req.body;
+    //récupérer les données envoyé ( username, mdp, email, )
+    const { username, password, email } = req.body;
 
     //vérifier si les champs obligatoire sont présents
-    if (!username || !password || !role) {
+    if (!username || !password || !email) {
       return res.status(400).json({ error: "Informations requises" });
     }
 
@@ -20,10 +20,18 @@ exports.register = async (req, res) => {
     }
 
     // créer un nouvel utilisateur :
-    const user = new User({ username, password, role });
+    const user = new User({ username, password, email, role: "client" });
     await user.save();
-    //renvoi une confirmation
-    res.status(201).json({ message: "Utilisateur créé", user: { user, role } });
+    // renvoyer  les infos de l'user ( sans le token ou mdp hashé) :
+    res.status(201).json({
+      message: "Utilisateur créé",
+      user: {
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        _id: user._id,
+      },
+    });
   } catch (error) {
     console.error("Erreur register", error);
     res.status(500).json({ error: "Erreur serveur" });
@@ -55,10 +63,28 @@ exports.login = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "24h" }
     );
-    //renvoyer le token et les infos de l'user :
-    res.status(200).json({ token, user: { username, role: user.role } });
+    //renvoyer  les infos de l'user ( sans le token ou mdp hashé) :
+    res.status(200).json({
+      message: "Connexion réussie",
+      token,
+      user: {
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        _id: user._id,
+      },
+    });
   } catch (error) {
     console.error("Erreur login", error);
     res.status(500).json({ error: "Erreur serveur" + error.message });
+  }
+};
+
+exports.getAllUsers = async (req, res, next) => {
+  try {
+    const users = await User.find();
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(400).json({ error });
   }
 };

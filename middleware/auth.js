@@ -5,7 +5,7 @@ module.exports.auth = (req, res, next) => {
     // vérifier l'entete authorization
     if (
       !req.headers.authorization ||
-      !req.headers.authorization.startWith("Bearer")
+      !req.headers.authorization.startsWith("Bearer")
     ) {
       return res.status(401).json({ error: "Token manquant ou invalide" });
     }
@@ -15,7 +15,7 @@ module.exports.auth = (req, res, next) => {
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
     //// Extrait userId et role du token décodé
     const { userId, role } = decodedToken;
-    if (!userId || role) {
+    if (!userId || !role) {
       return res.status(401).json({ error: " Token Manquant" });
     }
     //Ajoute userId et role à req.auth pour les utiliser dans les controllers ou autres middlewares

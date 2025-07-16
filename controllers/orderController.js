@@ -78,39 +78,30 @@ exports.updateOrder = async (req, res, next) => {
   }
 };
 
-exports.deleteOrder = (req, res, next) => {
-  const orderId = req.params.id;
+exports.deleteOrder = async (req, res, next) => {
+  const ordeId = req.params.id;
 
-  Order.findOne({ orderId: orderId })
-    .then((order) => {
-      if (!order) {
-        return res.status(404).json({ message: "Commande non trouvée" });
+  try {
+    const order = await Order.findOne({ orderId });
+    if (!order) {
+      return res.status(404).json({ message: "commande non trouvée" });
+    }
+    //vérifier l'autorisation :
+    if (order.userId.toString() !== req.auth.userId) {
+      return res.status(401).json({ message: "Non autorisé" });
+    }
+    // supprimé image si présente :
+    if (order.imageUrl) {
+      const filename = order.imageUrl.split("/images")[1];
+      try {
+        await fs.unlink(`images/${filename}`);
+      } catch (error) {
+        console.error("erreur lors de la récupération de l'image");
       }
-
-      // Vérifier l'autorisation
-      if (order.userId.toString() !== req.auth.userId) {
-        return res.status(401).json({ message: "Non autorisé" });
-      }
-
-      // Supprimer l'image si imageUrl existe
-      if (order.imageUrl) {
-        const filename = order.imageUrl.split("/images/")[1];
-        fs.unlink(`images/${filename}`, (err) => {
-          if (err) {
-            console.error("Erreur suppression fichier image :", err);
-            // On peut continuer même si la suppression de fichier échoue
-          }
-          // Supprimer la commande en base
-          Order.deleteOne({ orderId: orderId })
-            .then(() => res.status(200).json({ message: "Commande supprimée" }))
-            .catch((error) => res.status(500).json({ error }));
-        });
-      } else {
-        // Si pas d'image, juste supprimer la commande
-        Order.deleteOne({ orderId: orderId })
-          .then(() => res.status(200).json({ message: "Commande supprimée" }))
-          .catch((error) => res.status(500).json({ error }));
-      }
-    })
-    .catch((error) => res.status(500).json({ error }));
+    }
+    await Order.deleteOne({ orderId });
+    res.status(200).json({ message: "commande supprimée" });
+  } catch (error) {
+    res.status(500).json({ error: "Erreur serveur" });
+  }
 };
