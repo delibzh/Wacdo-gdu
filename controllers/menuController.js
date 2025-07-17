@@ -9,7 +9,7 @@ exports.createMenu = async (req, res, next) => {
     await menu.save();
     res.status(201).json({ message: "menu crée" });
   } catch (error) {
-    res.status(400).json({ error });
+    next(error);
   }
 };
 
@@ -19,7 +19,7 @@ exports.getAllMenus = async (req, res, next) => {
     const menus = await Menu.find();
     res.status(200).json(menus);
   } catch (error) {
-    res.status(400).json({ error: "Menu non trouvé" });
+    next(error);
   }
 };
 
@@ -29,7 +29,7 @@ exports.getOneMenu = async (req, res, next) => {
     const menuById = await Menu.findById(req.params.id);
     res.status(200).json(menuById);
   } catch (error) {
-    res.status(404).json({ error: "  Menu non trouvé" });
+    next(error);
   }
 };
 
@@ -42,7 +42,7 @@ exports.modifyMenu = async (req, res, next) => {
     );
     res.status(200).json({ message: "Menu Modifié " });
   } catch (error) {
-    res.status(400).json({ error: "Modification Impossible" });
+    next(error);
   }
 };
 
@@ -56,6 +56,6 @@ exports.deleteMenu = async (req, res, next) => {
     await Menu.deleteOne({ _id: req.params.id });
     res.status(200).json({ message: "Menu supprimé" });
   } catch (error) {
-    res.status(400).json({ error: " Suppression impossible" });
+    next(error);
   }
 };

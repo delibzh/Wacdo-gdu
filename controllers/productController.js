@@ -13,7 +13,7 @@ exports.createProduct = async (req, res, next) => {
     await product.save();
     res.status(201).json({ message: "Produit enregistré" });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    next(error);
   }
 };
 
@@ -22,16 +22,22 @@ exports.getAllProducts = async (req, res, next) => {
     const products = await Product.find();
     res.status(200).json(products);
   } catch (error) {
-    res.status(404).json({ error });
+    next(error);
   }
 };
 
 exports.getOneProduct = async (req, res, next) => {
   try {
     const productById = await Product.findById(req.params.id);
+    if (!productById) {
+      const error = new Error("Produit Introuvable");
+      error.status = 404;
+      return next(error);
+    }
+
     res.status(200).json(productById);
   } catch (error) {
-    res.status(404).json({ error });
+    next(error);
   }
 };
 
@@ -60,22 +66,33 @@ exports.modifyProduct = async (req, res, next) => {
     );
     res.status(200).json({ message: "Objet modifié" }); // On renvoie une confirmation
   } catch (error) {
-    res.status(400).json({ error });
+    next(error);
   }
 };
 
 exports.deleteProduct = async (req, res, next) => {
   try {
-    const product = await Product.findOne({ _id: req.params.id });
-    if (product.userId != req.auth.userId) {
-      return res.status(401).json({ message: "Non autorisé" });
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      const error = new Error("Produit Introuvable");
+      error.status = 404;
+      return next(error);
     }
-    const filename = product.imageUrl.split("/images/")[1];
-    fs.unlink(`images/${filename}`, async () => {
-      await Product.deleteOne({ _id: req.params.id });
-      res.status(200).json({ message: "Objet supprimé" });
-    });
+    if (product.userId !== req.auth.userId) {
+      const error = new Error("Non autorisé");
+      error.status = 401;
+      return next(error);
+    }
+    //sécuriser le split :
+    if (product.imageUrl) {
+      const filename = product.imageUrl.split("/images/")[1]; // prendre le deuxieme morceau du lien après découpage : 0 = premier morceau, 1 = deuxieme morceau
+      if (filename) {
+        await fs.unlink(`images/${filename}`);
+      }
+    }
+    await Product.deleteOne({ _id: req.params.id });
+    res.status(200).json({ message: "Produit Supprimé" });
   } catch (error) {
-    res.status(500).json({ error });
+    next(error);
   }
 };
