@@ -15,7 +15,7 @@ exports.createOrder = async (req, res, next) => {
     }
     //générer un orderId Unique:
     const orderId = uuidv4();
-    // créer la commande avec status "pending " par défault
+    // créer la commande avec status " en attente " par défault
     const newOrder = new Order({
       orderId,
       products,
@@ -51,6 +51,7 @@ exports.getOrderById = (req, res, next) => {
     })
     .catch((error) => res.status(500).json({ message: "erreur serveur" }));
 };
+
 exports.updateOrder = async (req, res, next) => {
   try {
     const orderId = req.params.id;

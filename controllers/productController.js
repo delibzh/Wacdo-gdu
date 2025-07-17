@@ -3,19 +3,15 @@ const fs = require("fs");
 
 exports.createProduct = async (req, res, next) => {
   try {
+    const productObject = req.body; // Pas besoin de JSON.parse
     console.log("recu pour création de produit:", req.body);
-    const productObject = JSON.parse(req.body.product);
-    delete productObject._id;
-    delete productObject.userId;
     const product = new Product({
       ...productObject,
       userId: req.auth.userId,
-      imageUrl: `${req.protocol}://${req.get("host")}/images/${
-        req.file.filename
-      }`,
     });
+
     await product.save();
-    res.status(201).json({ message: "Objet Enregistré" });
+    res.status(201).json({ message: "Produit enregistré" });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

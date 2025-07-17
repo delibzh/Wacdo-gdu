@@ -88,3 +88,22 @@ exports.getAllUsers = async (req, res, next) => {
     res.status(400).json({ error });
   }
 };
+
+exports.deleteUserById = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+
+    // autoriser la suppression si c'est l'utilisateur lui-même ou un admin
+    if (user._id.toString() !== req.auth.userId && req.auth.role !== "admin") {
+      return res.status(401).json({ message: "non autorisé" });
+    }
+
+    await User.deleteOne({ _id: req.params.id });
+    res.status(200).json({ message: "utilisateur supprimé" });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
