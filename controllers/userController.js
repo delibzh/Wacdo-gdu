@@ -1,9 +1,8 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
 const User = require("../models/User");
 
-exports.register = async (req, res) => {
+exports.register = async (req, res, next) => {
   try {
     //récupérer les données envoyé ( username, mdp, email, )
     const { username, password, email } = req.body;
@@ -33,8 +32,7 @@ exports.register = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Erreur register", error);
-    res.status(500).json({ error: "Erreur serveur" });
+    next(error);
   }
 };
 
@@ -75,8 +73,7 @@ exports.login = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Erreur login", error);
-    res.status(500).json({ error: "Erreur serveur" + error.message });
+    next(error);
   }
 };
 
@@ -85,7 +82,7 @@ exports.getAllUsers = async (req, res, next) => {
     const users = await User.find();
     res.status(200).json(users);
   } catch (error) {
-    res.status(400).json({ error });
+    next(error);
   }
 };
 
@@ -104,6 +101,6 @@ exports.deleteUserById = async (req, res, next) => {
     await User.deleteOne({ _id: req.params.id });
     res.status(200).json({ message: "utilisateur supprimé" });
   } catch (error) {
-    res.status(500).json({ error });
+    next(error);
   }
 };

@@ -18,5 +18,6 @@ router.put(
   orderCtrl.updateOrder
 );
 router.delete("/:id", auth, restrictTo(["admin"]), orderCtrl.deleteOrder);
+router.get("/", auth, orderCtrl.getAllOrders);
 
 module.exports = router;

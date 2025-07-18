@@ -4,9 +4,10 @@ const app = express();
 const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
+
 require("dotenv").config();
 app.use(express.json());
-
+const { errorHandler } = require("./controllers/errorHandler");
 const productRoutes = require("./routes/productRoutes");
 const userRoutes = require("./routes/userRoutes");
 const orderRoutes = require("./routes/orderRoutes");
@@ -47,7 +48,9 @@ app.get("/", (req, res) => {
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/auth", userRoutes);
-app.use("/api/menu", menuRoutes);
+app.use("/api/menus", menuRoutes);
+
+app.use(errorHandler);
 
 // Démarrage du serveur sur le port 3000
 app.listen(3000, () => {

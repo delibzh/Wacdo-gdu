@@ -272,10 +272,8 @@ components:
 
     OrderInput:
       type: object
-      required: [orderId, products, totalPrice]
+      required: [products, totalPrice]
       properties:
-        orderId:
-          type: string
         products:
           type: array
           items:

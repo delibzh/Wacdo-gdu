@@ -1,9 +1,9 @@
 const Product = require("../models/Product");
-const fs = require("fs");
+const fs = require("fs").promises;
 
 exports.createProduct = async (req, res, next) => {
   try {
-    const productObject = req.body; // Pas besoin de JSON.parse
+    const productObject = req.body;
     console.log("recu pour création de produit:", req.body);
     const product = new Product({
       ...productObject,
@@ -43,7 +43,7 @@ exports.getOneProduct = async (req, res, next) => {
 
 exports.modifyProduct = async (req, res, next) => {
   try {
-    const productObject = req.file // // Si un fichier est envoyé, on met à jour l'image, sinon on prend juste le body
+    const productObject = req.file
       ? {
           ...JSON.parse(req.body.product),
           imageUrl: `${req.protocol}://${req.get("host")}/images/${
@@ -52,19 +52,18 @@ exports.modifyProduct = async (req, res, next) => {
         }
       : { ...req.body };
 
-    delete productObject._userId; /// On retire le champ _userId s'il existe
+    delete productObject._userId;
 
-    const product = await Product.findOne({ _id: req.params.id }); // On récupère le produit à modifier dans la base
-    if (product.userId != req.auth.userId) {
-      // On vérifie que l'utilisateur connecté est bien le propriétaire du produit
-      return res.status(401).json({ message: "Non autorisé" });
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      return res.status(404).json({ message: "Produit introuvable" });
     }
+
     await Product.updateOne(
-      // On met à jour le produit avec les nouvelles données
       { _id: req.params.id },
       { ...productObject, _id: req.params.id }
     );
-    res.status(200).json({ message: "Objet modifié" }); // On renvoie une confirmation
+    res.status(200).json({ message: "Produit modifié" });
   } catch (error) {
     next(error);
   }
@@ -78,16 +77,13 @@ exports.deleteProduct = async (req, res, next) => {
       error.status = 404;
       return next(error);
     }
-    if (product.userId !== req.auth.userId) {
-      const error = new Error("Non autorisé");
-      error.status = 401;
-      return next(error);
-    }
+
     //sécuriser le split :
     if (product.imageUrl) {
       const filename = product.imageUrl.split("/images/")[1]; // prendre le deuxieme morceau du lien après découpage : 0 = premier morceau, 1 = deuxieme morceau
       if (filename) {
-        await fs.unlink(`images/${filename}`);
+        // si filename (ex: "pizza.jpg") existe et n'est pas vide :
+        await fs.unlink(`images/${filename}`); // on attend que l'action est fini avec de continuer ( iici la supprssion avec fs.unlink) et avec ceci `images/${filename}` on assemble le chemin du fichier à supprimé ex : fs.unlink("images/pizza.jpg")
       }
     }
     await Product.deleteOne({ _id: req.params.id });

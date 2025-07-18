@@ -22,7 +22,7 @@ module.exports.auth = (req, res, next) => {
     req.auth = { userId, role };
     next();
   } catch (error) {
-    res.status(401).json({ error: "Authentification échouée" });
+    next(error);
   }
 };
 

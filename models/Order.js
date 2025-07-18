@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const orderSchema = new mongoose.Schema(
   {
-    orderId: { type: String, required: true }, // string car uuidv4() génère une string
+    // orderId: { type: String, required: true }, // string car uuidv4() génère une string
     products: [
       { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },
     ],
