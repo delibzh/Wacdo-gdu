@@ -98,7 +98,7 @@ exports.deleteUserById = async (req, res, next) => {
       return res.status(401).json({ message: "non autorisé" });
     }
 
-    await User.deleteOne({ _id: req.params.body });
+    await User.deleteOne({ _id: req.params.id });
     res.status(200).json({ message: "utilisateur supprimé" });
   } catch (error) {
     next(error);
