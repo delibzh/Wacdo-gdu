@@ -1,6 +1,4 @@
-const mongoose = require("mongoose");
 const Menu = require("../models/Menu");
-const menuSchema = mongoose.Schema({});
 
 exports.createMenu = async (req, res, next) => {
   // admin uniquement
@@ -13,8 +11,8 @@ exports.createMenu = async (req, res, next) => {
   }
 };
 
-exports.getAllMenus = async (req, res, next) => {
-  //tout les roles
+exports.getAllMenus = async (res, next) => {
+  // tout les roles
   try {
     const menus = await Menu.find();
     res.status(200).json(menus);

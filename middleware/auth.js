@@ -13,7 +13,7 @@ module.exports.auth = (req, res, next) => {
     const token = req.headers.authorization.split(" ")[1];
     // Vérifie et décode le token avec la clé secrète
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-    //// Extrait userId et role du token décodé
+    // Extrait userId et role du token décodé
     const { userId, role } = decodedToken;
     if (!userId || !role) {
       return res.status(401).json({ error: " Token Manquant" });
@@ -28,6 +28,7 @@ module.exports.auth = (req, res, next) => {
 
 module.exports.restrictTo = (roles) => {
   return (req, res, next) => {
+    console.log("Role depuis token:", req.auth.role);
     //vérifié si le role de l'user (sotcké dans req.auth.role) est dans la liste des role autorisée
     if (!req.auth || !roles.includes(req.auth.role)) {
       return res

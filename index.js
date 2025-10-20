@@ -12,6 +12,7 @@ const productRoutes = require("./routes/productRoutes");
 const userRoutes = require("./routes/userRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const menuRoutes = require("./routes/menuRoutes");
+const path = require("path");
 
 const swaggerSetup = require("./config/swaggerConfig");
 
@@ -49,6 +50,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/auth", userRoutes);
 app.use("/api/menus", menuRoutes);
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 app.use(errorHandler);
 

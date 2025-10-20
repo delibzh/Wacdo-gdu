@@ -5,8 +5,13 @@ exports.createProduct = async (req, res, next) => {
   try {
     const productObject = req.body;
     console.log("recu pour création de produit:", req.body);
+    const imageUrl = req.file
+      ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
+      : "";
+
     const product = new Product({
       ...productObject,
+      imageUrl,
       userId: req.auth.userId,
     });
 
@@ -17,7 +22,7 @@ exports.createProduct = async (req, res, next) => {
   }
 };
 
-exports.getAllProducts = async (req, res, next) => {
+exports.getAllProducts = async (res, next) => {
   try {
     const products = await Product.find();
     res.status(200).json(products);
@@ -83,7 +88,7 @@ exports.deleteProduct = async (req, res, next) => {
       const filename = product.imageUrl.split("/images/")[1]; // prendre le deuxieme morceau du lien après découpage : 0 = premier morceau, 1 = deuxieme morceau
       if (filename) {
         // si filename (ex: "pizza.jpg") existe et n'est pas vide :
-        await fs.unlink(`images/${filename}`); // on attend que l'action est fini avec de continuer ( iici la supprssion avec fs.unlink) et avec ceci `images/${filename}` on assemble le chemin du fichier à supprimé ex : fs.unlink("images/pizza.jpg")
+        await fs.unlink(`images/${filename}`); // attendre que l'action est fini avec de continuer ( iici la supprssion avec fs.unlink) et avec ceci `images/${filename}` on assemble le chemin du fichier à supprimé ex : fs.unlink("images/pizza.jpg")
       }
     }
     await Product.deleteOne({ _id: req.params.id });

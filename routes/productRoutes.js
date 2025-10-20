@@ -2,10 +2,19 @@ const express = require("express");
 const router = express.Router();
 const productCtrl = require("../controllers/productController");
 const { auth, restrictTo } = require("../middleware/auth");
+const upload = require("../middleware/multer-config");
 
-router.get("/", auth, productCtrl.getAllProducts); // lecture ouverte
-router.get("/:id", auth, productCtrl.getOneProduct); // lecture ouverte
-router.post("/", auth, restrictTo(["admin"]), productCtrl.createProduct); // admin
+// Routes Produits :
+
+router.get("/", auth, productCtrl.getAllProducts);
+router.get("/:id", auth, productCtrl.getOneProduct);
+router.post(
+  "/",
+  auth,
+  restrictTo(["admin"]),
+  upload,
+  productCtrl.createProduct
+); // admin
 router.put("/:id", auth, restrictTo(["admin"]), productCtrl.modifyProduct); // admin
 router.delete("/:id", auth, restrictTo(["admin"]), productCtrl.deleteProduct); // admin
 

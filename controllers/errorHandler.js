@@ -1,6 +1,6 @@
 // Gestions des erreurs simplifié :
 
-exports.errorHandler = (err, req, res, next) => {
+exports.errorHandler = (err, res) => {
   console.error("Erreur capturée", err.message);
 
   // Erreur Défault : interne au serveur :

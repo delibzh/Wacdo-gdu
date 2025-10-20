@@ -36,7 +36,7 @@ exports.register = async (req, res, next) => {
   }
 };
 
-exports.login = async (req, res) => {
+exports.login = async (req, res, next) => {
   try {
     //récupérer username et mdp
     const { username, password } = req.body;
@@ -77,6 +77,7 @@ exports.login = async (req, res) => {
   }
 };
 
+// listé tout les utilisateurs :
 exports.getAllUsers = async (req, res, next) => {
   try {
     const users = await User.find();
@@ -86,6 +87,7 @@ exports.getAllUsers = async (req, res, next) => {
   }
 };
 
+// supprimé utilisateur par ID ( Admin )
 exports.deleteUserById = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.id);
@@ -102,5 +104,42 @@ exports.deleteUserById = async (req, res, next) => {
     res.status(200).json({ message: "utilisateur supprimé" });
   } catch (error) {
     next(error);
+  }
+};
+
+// intégré fonction pour que l'utilisateur  puissent récuperer ses informations, les modifier ou les supprimer
+
+exports.getUserData = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user)
+      return res.status(404).json({ message: "Utilisateur introuvable" });
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// modifier les infos personnelles
+exports.updateUserData = async (req, res) => {
+  try {
+    const updatedUser = await User.findByIdAndUpdate(req.user.id, req.body, {
+      new: true,
+      runValidators: true,
+    }).select("-password");
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    res.status(500).json({ messsge: error.message });
+  }
+};
+
+// supprimer son compte en tant qu'utilisateur :
+
+exports.deleteUserAccount = async (req, res) => {
+  try {
+    await User.findByIdAndDelete(req.user.id);
+    res.status(200).json({ message: "Compte supprimé avec succès" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

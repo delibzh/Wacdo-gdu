@@ -1,0 +1,79 @@
+🧍 Gestion des utilisateurs
+
+    Création de compte (POST /api/users/register)
+
+    Connexion (POST /api/users/login)
+
+    Authentification via JWT
+
+    Gestion des rôles (admin, accueil, preparation, client)
+
+    Sécurisation des routes selon le rôle
+
+    Modification et suppression d’un utilisateur (admin uniquement)
+
+🍔 Gestion des produits
+
+    Ajout d’un produit (admin)
+
+    Lecture de tous les produits (GET /api/products)
+
+    Lecture d’un produit par ID
+
+    Modification d’un produit
+
+    Suppression d’un produit
+
+    Catégorisation (Menu, Boisson, Dessert, etc.)
+
+    Filtrage par catégorie ou disponibilité
+
+🧾 Gestion des menus
+
+    Création d’un menu (admin)
+
+    Lecture / modification / suppression d’un menu
+
+    Liaison produits ↔ menus
+
+🛒 Gestion des commandes
+
+    Création d’une commande (client ou accueil)
+
+    Lecture des commandes par statut
+
+    Mise à jour du statut : “en préparation”, “prête”, “livrée”
+
+    Calcul automatique du total
+
+    Historique des commandes
+
+🔐 Sécurité & API
+
+    Middleware d’authentification JWT
+
+    Middleware de rôle
+
+    Validation des entrées (protection contre injections)
+
+    Messages d’erreur clairs
+
+    Documentation API avec Swagger
+
+⚙️ Base de données
+
+    Modèles Mongoose (User, Product, Menu, Order)
+
+    Relations entre les collections MPD, MCD
+
+    Données persistées sur MongoDB Atlas
+
+🚀 Déploiement et collaboration
+
+    Dépôt GitHub propre avec README
+
+    Organisation des fichiers par dossier (controllers, routes, models, etc.)
+
+    Test de l’API avec Postman et Swagger
+
+    Déploiement possible sur Render ou autre hébergeur

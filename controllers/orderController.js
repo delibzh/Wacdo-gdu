@@ -26,7 +26,7 @@ exports.createOrder = async (req, res, next) => {
   }
 };
 
-exports.getAllOrders = async (req, res, next) => {
+exports.getAllOrders = async (res, next) => {
   try {
     const orders = await Order.find();
     res.status(200).json(orders);
