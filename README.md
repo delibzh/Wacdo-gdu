@@ -151,37 +151,38 @@ POST http://localhost:3000/api/products
 
 ---
 
-### Critère d’évaluation | Ce qui a été fait |
+## ✅ Critères d’évaluation et ce qui a été fait
 
+| Critère d’évaluation                                                           | Ce qui a été fait                                                                                           |
 | ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
-| Les données nécessaires à l'application sont correctement identifiées | Modèles Mongoose pour `User`, `Product`, `Menu`, `Order` avec tous les champs pertinents |
-| Les données sont retranscrites sur un schéma décrivant les tables et relations | MCD et MPD créé avec relations 1‑N et N‑N entre `User`, `Order`, `Product`, `Menu` |
-| Le nommage des tables et des champs est cohérent | Entités et champs nommés de façon explicite (`username`, `email`, `price`, `status`, etc.) |
-| Le type des champs est adapté à la nature des données | `Number`, `String`, `Boolean`, `Date`, enums pour `role` et `category` |
-| La mise en relation des tables est correctement effectuée | Références (`userId`, `products`) avec ObjectId et `.populate()` pour les relations |
-| Les requêtes utilisent tri et filtres | `getAllProducts` et `getAllOrders` avec filtres (`category`, `status`, `available`) et possibilité de trier |
-| Les requêtes sont optimisées via clés étrangères et liaisons | Références MongoDB ObjectId pour relations 1‑N et N‑N |
-| Les données sensibles sont protégées | Mots de passe hashés avec `bcrypt`, JWT pour authentification |
-| L’application informe l’utilisateur du stockage et partage des données | Routes `/me` pour consultation et modification, accès contrôlé par token JWT |
-| L’utilisateur peut consulter, modifier et supprimer ses données | Routes `/api/auth/me` pour GET, PUT, DELETE |
-| Toutes les fonctionnalités nécessaires sont listées | CRUD complet pour `User`, `Product`, `Menu`, `Order`; gestion des rôles; upload images |
-| Le schéma fonctionnel décrit l’enchaînement des vues | Documentation Swagger complète avec toutes les routes et interactions |
-| Code indenté et commenté | Contrôleurs, routes et middlewares commentés; indentation uniforme |
-| Dossiers et fichiers organisés | Structure : `/controllers`, `/models`, `/routes`, `/middleware`, `/config`, `/images` |
-| Conventions de nommage respectées | CamelCase pour variables/fonctions, PascalCase pour modèles |
-| Limites du code connues | `try/catch` et `errorHandler` pour toutes les routes, vérifications avant modification/suppression |
-| Les erreurs de codage sont traitées | Statuts HTTP appropriés (`400`, `401`, `403`, `404`, `500`) et messages clairs |
-| Implémentation de classes génériques et héritage | Modules et fonctions Mongoose pour gérer les entités (suffisant pour ce projet) |
-| Modèle gère interactions avec la base | CRUD via Mongoose (`find`, `save`, `findById`, `findByIdAndUpdate`) |
-| Contrôleurs implémentent la logique et préparent les données | Récupération et traitement des données avant renvoi en JSON |
-| La “vue” affiche les données | Swagger et Postman servent de vue pour tester et afficher les données |
-| Intégrité des données protégée | Validation Mongoose, middleware `auth`, `restrictTo` et protection contre injection |
-| Authentification sécurisée | JWT + bcrypt, routes `/login` et `/register` |
-| Gestion des rôles | Middleware `restrictTo(["admin"])` pour routes sensibles |
-| Outil collaboratif maîtrisé | Git/GitHub utilisé pour versionning et dépôt du projet |
-| Fonctionnalités conformes au cahier des charges | CRUD complet, gestion commandes, produits, menus, images et rôles |
-| Tests unitaires réalisés | Tests manuels avec Postman et Swagger sur toutes les routes |
-| Application mise en ligne et fonctionnelle | API locale (`localhost:3000`) testée avec succès |
-| Testée en production | Postman et Swagger utilisés, gestion des erreurs testée, retours cohérents |
+| Les données nécessaires à l'application sont correctement identifiées          | Modèles Mongoose pour `User`, `Product`, `Menu`, `Order` avec tous les champs pertinents                    |
+| Les données sont retranscrites sur un schéma décrivant les tables et relations | MCD créé avec relations 1‑N et N‑N entre `User`, `Order`, `Product`, `Menu`                                 |
+| Le nommage des tables et des champs est cohérent                               | Entités et champs nommés de façon explicite (`username`, `email`, `price`, `status`, etc.)                  |
+| Le type des champs est adapté à la nature des données                          | `Number`, `String`, `Boolean`, `Date`, enums pour `role` et `category`                                      |
+| La mise en relation des tables est correctement effectuée                      | Références (`userId`, `products`) avec ObjectId et `.populate()` pour les relations                         |
+| Les requêtes utilisent tri et filtres                                          | `getAllProducts` et `getAllOrders` avec filtres (`category`, `status`, `available`) et possibilité de trier |
+| Les requêtes sont optimisées via clés étrangères et liaisons                   | Références MongoDB ObjectId pour relations 1‑N et N‑N                                                       |
+| Les données sensibles sont protégées                                           | Mots de passe hashés avec `bcrypt`, JWT pour authentification                                               |
+| L’application informe l’utilisateur du stockage et partage des données         | Routes `/me` pour consultation et modification, accès contrôlé par token JWT                                |
+| L’utilisateur peut consulter, modifier et supprimer ses données                | Routes `/api/auth/me` pour GET, PUT, DELETE                                                                 |
+| Toutes les fonctionnalités nécessaires sont listées                            | CRUD complet pour `User`, `Product`, `Menu`, `Order`; gestion des rôles; upload d’images                    |
+| Le schéma fonctionnel décrit l’enchaînement des vues                           | Documentation Swagger complète avec toutes les routes et interactions                                       |
+| Code indenté et commenté                                                       | Contrôleurs, routes et middlewares commentés; indentation uniforme                                          |
+| Dossiers et fichiers organisés                                                 | Structure : `/controllers`, `/models`, `/routes`, `/middleware`, `/config`, `/images`                       |
+| Conventions de nommage respectées                                              | CamelCase pour variables/fonctions, PascalCase pour modèles                                                 |
+| Limites du code connues                                                        | `try/catch` et `errorHandler` pour toutes les routes; vérifications avant modification/suppression          |
+| Les erreurs de codage sont traitées                                            | Statuts HTTP appropriés (`400`, `401`, `403`, `404`, `500`) et messages clairs                              |
+| Implémentation de classes génériques et héritage                               | Modules et fonctions Mongoose pour gérer les entités                                                        |
+| Modèle gère interactions avec la base                                          | CRUD via Mongoose (`find`, `save`, `findById`, `findByIdAndUpdate`)                                         |
+| Contrôleurs implémentent la logique et préparent les données                   | Récupération et traitement des données avant renvoi en JSON                                                 |
+| La “vue” affiche les données                                                   | Swagger et Postman servent de vue pour tester et afficher les données                                       |
+| Intégrité des données protégée                                                 | Validation Mongoose, middleware `auth`, `restrictTo` et protection contre injection                         |
+| Authentification sécurisée                                                     | JWT + bcrypt, routes `/login` et `/register`                                                                |
+| Gestion des rôles                                                              | Middleware `restrictTo(["admin"])` pour routes sensibles                                                    |
+| Outil collaboratif maîtrisé                                                    | Git/GitHub utilisé pour versionning et dépôt du projet                                                      |
+| Fonctionnalités conformes au cahier des charges                                | CRUD complet, gestion commandes, produits, menus, images et rôles                                           |
+| Tests unitaires réalisés                                                       | Tests manuels avec Postman et Swagger sur toutes les routes                                                 |
+| Application mise en ligne et fonctionnelle                                     | API locale (`localhost:3000`) testée avec succès                                                            |
+| Testée en production                                                           | Postman et Swagger utilisés, gestion des erreurs testée, retours cohérents                                  |
 
 ---
